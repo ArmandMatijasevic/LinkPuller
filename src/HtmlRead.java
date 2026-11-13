@@ -16,14 +16,26 @@ public class HtmlRead {
                     new InputStreamReader(urlc.getInputStream()));
             String line;
             while ( (line = reader.readLine()) != null ) {
-                if (line.contains("https")){
-                    int start = line.indexOf("https");
+                int start = 0;
+                while ((start = line.indexOf("https", start)) !=-1){
                     String shortline = line.substring(start);
-                    int end = shortline.indexOf("\"");
-                    System.out.println(line);
-                    String shortestline = shortline.substring(0, end);
-                    System.out.println(shortestline);
-
+                    int endDoubleQuote = shortline.indexOf("\"");
+                    int endSingleQuote = shortline.indexOf("'");
+                    int end;
+                    if (endDoubleQuote == -1){
+                        end = endSingleQuote;
+                    }
+                    else if (endSingleQuote == -1){
+                        end = endDoubleQuote;
+                    }
+                    else {
+                        end = Math.min(endDoubleQuote, endSingleQuote);
+                    }
+                    if (end != -1){
+                        String singleURL = line.substring(end);
+                        System.out.println(singleURL);
+                    }
+                    start ++;
                 }
             }
             reader.close();
